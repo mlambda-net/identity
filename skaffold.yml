@@ -1,0 +1,47 @@
+apiVersion: skaffold/v2beta8
+kind: Config
+
+metadata:
+  name: user
+
+build:
+  tagPolicy:
+    envTemplate:
+      template: "{{.IMAGE_NAME}}:{{.VERSION}}"
+  local:
+    push: true
+  artifacts:
+    - image: docker.pkg.github.com/mlambda-net/identity/user
+      context: .
+      docker:
+        dockerfile: docker/server/Dockerfile
+
+    - image: docker.pkg.github.com/mlambda-net/identity/api
+      context: .
+      docker:
+        dockerfile: docker/api/Dockerfile
+
+deploy:
+  helm:
+    releases:
+
+      - name: server
+        namespace: user
+        chartPath: helm/server
+        setValueTemplates:
+          env: "{{.ENV}}"
+          image.tag: "{{.VERSION}}"
+          variables.user: "{{.DB_USER}}"
+          variables.password: "{{.DB_PASSWORD}}"
+          variables.host: "{{.DB_HOST}}"
+          variables.data: "{{.DB_DATA}}"
+          variables.port: "{{.DB_PORT}}"
+          variables.secret: "{{.SECRET_KEY}}"
+
+      - name: api
+        namespace: user
+        chartPath: helm/api
+        setValueTemplates:
+         env: "{{.ENV}}"
+         image.tag: "{{.VERSION}}"
+         variables.secret: "{{.SECRET_KEY}}"

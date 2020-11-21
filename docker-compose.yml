@@ -1,0 +1,44 @@
+version: '3.7'
+services:
+
+  data:
+    ports:
+      - "5432:5432"
+    build:
+      dockerfile: docker/db/Dockerfile
+      context: .
+
+  migrate:
+    command: -configFiles=/db/flyway.conf -connectRetries=60 migrate
+    build:
+      context: .
+      dockerfile: docker/migrate/Dockerfile
+    depends_on:
+      - data
+
+  server:
+    ports:
+      - "9001:9001"
+    environment:
+      - ENV=dev
+      - DB_HOST=data
+      - DB_DATA=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_PORT=5432
+      - SECRET_KEY=6368616e676520746869732070617373776f726420746f206120736563726574
+    build:
+      context: .
+      dockerfile: docker/server/Dockerfile
+
+  api:
+    ports:
+      - "8001:8001"
+      - "8002:8002"
+      - "8003:8003"
+    environment:
+      - ENV=dev
+      - SECRET_KEY=6368616e676520746869732070617373776f726420746f206120736563726574
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile

@@ -1,0 +1,77 @@
+syntax = "proto3";
+package message;
+
+message Create {
+  string name = 1;
+  string lastName =2;
+  string email=3;
+  string password=4;
+}
+
+message Response {
+   int64 id = 1;
+}
+
+enum Type {
+  ID = 0;
+  NAME = 1;
+  EMAIL = 2;
+}
+
+message Filter {
+  string name = 1;
+  string lastName = 2;
+  string email = 3;
+  string id = 4;
+  Type by = 5;
+}
+
+message Single {
+  string email = 1;
+  string id = 2;
+  Type by = 3;
+}
+
+message Result {
+  int64 id = 1;
+  string name = 2;
+  string lastName = 3;
+  string email = 4;
+}
+
+message Results {
+  repeated Result results = 1;
+}
+
+message Delete {
+  int64 id = 1;
+}
+
+message Update {
+  string email = 1;
+  string name = 2;
+  string lastName = 3;
+}
+
+message ChangePassword {
+  string email = 1;
+  string password = 2;
+  string oldPassword = 3;
+}
+
+message Authenticate {
+  string email = 1;
+  string password = 2;
+}
+
+message Token {
+  string value = 1;
+}
+
+message RecoverPassword {
+  string email = 1;
+}
+
+message Find {
+   string email = 1;
+}

@@ -1,0 +1,13 @@
+app:
+  name:     server
+  port:     9001
+  version:  1.0.0
+
+metric:
+  port: 9002
+  namespace: my
+
+email:
+  server: exchange
+  port: 80
+

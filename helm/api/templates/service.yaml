@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "userapi.fullname" . }}
+  labels:
+    {{- include "userapi.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.ports.http }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.service.ports.metrics }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+    - port: {{ .Values.service.ports.swagger }}
+      targetPort: swagger
+      protocol: TCP
+      name: swagger
+  selector:
+    {{- include "userapi.selectorLabels" . | nindent 4 }}

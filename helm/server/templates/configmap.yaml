@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-config
+data:
+  ENV: "{{.Values.env}}"
+  DB_PORT:  "{{.Values.variables.port}}"
+  DB_HOST: "{{.Values.variables.host}}"
+  DB_DATA: "{{.Values.variables.data}}"
+  DB_PASSWORD: "{{.Values.variables.password}}"
+  DB_USER: "{{.Values.variables.user}}"
+  SECRET_KEY: "{{.Values.variables.secret}}"
