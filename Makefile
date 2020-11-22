@@ -14,7 +14,7 @@ clean:
 	flyway clean
 
 prod:
-	./scripts/deploy.sh pro
+	./scripts/deploy.sh prod
 
 dev:
 	./scripts/deploy.sh dev

@@ -47,7 +47,7 @@ spec:
             - name: http
               containerPort: 8001
               protocol: TCP
-            - name: metrics
+            - name: check
               containerPort: 8002
               protocol: TCP
             - name: swagger
@@ -56,13 +56,13 @@ spec:
 
           livenessProbe:
             httpGet:
-              path: /api/user/live
-              port: metrics
+              path: check/user/live
+              port: check
 
           readinessProbe:
             httpGet:
-              path: /api/user/healthz
-              port: metrics
+              path: check/user/healthz
+              port: check
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

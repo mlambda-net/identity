@@ -36,7 +36,7 @@ type Configuration struct {
 
 func LoadConfig(params ...string) *Configuration {
 
-	env := os.Getenv("env")
+	env := os.Getenv("ENV")
 	if env == "" {
 		env = "dev"
 	}

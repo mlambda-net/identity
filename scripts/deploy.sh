@@ -1,7 +1,7 @@
 deploy() {
   case $1 in
   dev) deploy_dev ;;
-  pro) deploy_pro ;;
+  prod) deploy_prod ;;
   esac
 }
 
@@ -13,7 +13,7 @@ deploy_dev() {
   skaffold dev
 }
 
-deploy_pro() {
+deploy_prod() {
   TAG="$(git describe --tags --abbrev=0)"
   export ENV="prod"
   export VERSION="${TAG:-1.0.0}"

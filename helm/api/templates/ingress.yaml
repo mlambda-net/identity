@@ -37,7 +37,7 @@ spec:
           - path: /check
             backend:
               serviceName: {{ $fullName }}
-              servicePort: metrics
+              servicePort: check
           - path: /docs
             backend:
               serviceName: {{ $fullName }}

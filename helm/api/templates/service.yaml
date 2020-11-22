@@ -12,9 +12,9 @@ spec:
       protocol: TCP
       name: http
     - port: {{ .Values.service.ports.metrics }}
-      targetPort: metrics
+      targetPort: check
       protocol: TCP
-      name: metrics
+      name: check
     - port: {{ .Values.service.ports.swagger }}
       targetPort: swagger
       protocol: TCP
