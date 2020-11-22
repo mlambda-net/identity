@@ -53,6 +53,7 @@ ingress:
 
   hosts:
     - host: api.mlambda.me
+    - host: api.mitienda.co.cr
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -60,11 +61,11 @@ ingress:
 
 resources:
    limits:
-     cpu: 100m
-     memory: 128Mi
+     cpu: 50m
+     memory: 50Mi
    requests:
-     cpu: 100m
-     memory: 128Mi
+     cpu: 50m
+     memory: 50Mi
 
 autoscaling:
   enabled: false

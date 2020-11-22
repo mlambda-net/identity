@@ -47,7 +47,10 @@ func (s *setup) GetVersion() string {
 }
 
 func (s *setup) GetHost() string {
-  return fmt.Sprintf("%s:%d",s.config.App.Host, s.config.App.Port)
+  if s.config.App.Host == "localhost" {
+    return fmt.Sprintf("%s:%d", s.config.App.Host, s.config.App.Port)
+  }
+  return s.config.App.Host
 }
 
 func (s *setup) Start() {

@@ -41,6 +41,7 @@ ingress:
 
   hosts:
     - host: server.mlambda.me
+    - host: server.mitienda.co.cr
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -48,11 +49,11 @@ ingress:
 
 resources:
    limits:
-     cpu: 100m
-     memory: 128Mi
+     cpu: 50m
+     memory: 50Mi
    requests:
-     cpu: 100m
-     memory: 128Mi
+     cpu: 50m
+     memory: 50Mi
 
 variables:
   user: postgres
