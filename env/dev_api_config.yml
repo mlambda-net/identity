@@ -10,5 +10,5 @@ metric:
   namespace:  api
 
 remote:
-  port:   9001
-  server: server
+  port:   443
+  server: api.mlambda.me

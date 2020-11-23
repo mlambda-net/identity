@@ -9,7 +9,7 @@ replicaCount: 1
 image:
   repository: docker.pkg.github.com/mlambda-net/identity/api
   tag: "latest"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 
 imagePullSecrets:
@@ -26,15 +26,8 @@ serviceAccount:
 podAnnotations: {}
 
 podSecurityContext: {}
-  # fsGroup: 2000
 
 securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 variables:
   secret: abc
@@ -50,14 +43,17 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: issuer-prod
 
   hosts:
     - host: api.mlambda.me
     - host: api.mitienda.co.cr
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+    - secretName: api-tls
+      hosts:
+        - api.mlambda.me
+        - api.mitienda.co.cr
 
 resources:
    limits:

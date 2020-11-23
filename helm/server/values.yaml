@@ -11,7 +11,7 @@ image:
   repository: docker.pkg.github.com/mlambda-net/identity/
   name: user
   tag: "latest"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 imagePullSecrets:
   - name: regdocker
@@ -37,15 +37,20 @@ service:
 ingress:
   enabled: true
   annotations:
+
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    cert-manager.io/cluster-issuer: issuer-prod
 
   hosts:
     - host: server.mlambda.me
     - host: server.mitienda.co.cr
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+    - secretName: server-tls
+      hosts:
+        - server.mlambda.me
+        - server.mitienda.co.cr
 
 resources:
    limits:

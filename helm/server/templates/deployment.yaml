@@ -34,17 +34,19 @@ spec:
           image: "{{ .Values.image.repository }}{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: gprc
               containerPort: 9001
               protocol: TCP
-#          livenessProbe:
-#            httpGet:
-#              path: /
-#              port: http
-#          readinessProbe:
-#            httpGet:
-#              path: /
-#              port: http
+          livenessProbe:
+            initialDelaySeconds: 5
+            exec:
+              command: ["/grpc_health_probe", "-addr=:9001"]
+
+          readinessProbe:
+            initialDelaySeconds: 10
+            exec:
+              command: ["/grpc_health_probe", "-addr=:9001"]
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

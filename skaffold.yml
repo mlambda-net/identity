@@ -45,3 +45,4 @@ deploy:
          env: "{{.ENV}}"
          image.tag: "{{.VERSION}}"
          variables.secret: "{{.SECRET_KEY}}"
+
