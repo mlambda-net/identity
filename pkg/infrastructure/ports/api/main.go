@@ -21,7 +21,7 @@ func main() {
 	docs.SwaggerInfo.Version = services.GetVersion()
 	docs.SwaggerInfo.Host = services.GetHost()
 	docs.SwaggerInfo.BasePath = services.Base()
-	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+	docs.SwaggerInfo.Schemes = []string{"https"}
 
 
 	go func() {

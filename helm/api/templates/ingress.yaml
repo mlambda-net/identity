@@ -34,10 +34,6 @@ spec:
             backend:
               serviceName: {{ $fullName }}
               servicePort: http
-          - path: /check
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: check
           - path: /docs
             backend:
               serviceName: {{ $fullName }}
