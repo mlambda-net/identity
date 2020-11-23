@@ -20,7 +20,7 @@ func (c *control) changePassword(w http.ResponseWriter, r *http.Request) {
 
 	var register model.ChangePassword
 
-	json.NewDecoder(r.Body).Decode(&register)
+  _ = json.NewDecoder(r.Body).Decode(&register)
 	token := r.Header.Get("Authorization")
 
 	reply, e := c.user.Token(token).Request(&message.ChangePassword{
@@ -34,6 +34,6 @@ func (c *control) changePassword(w http.ResponseWriter, r *http.Request) {
 	} else {
 		rsp := reply.(*message.Response)
 		id := rsp.Id
-		json.NewEncoder(w).Encode(id)
+    _ = json.NewEncoder(w).Encode(id)
 	}
 }

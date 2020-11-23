@@ -1,0 +1,21 @@
+dist: focal
+language: go
+go:
+  - 1.x
+
+services:
+  - docker
+
+install:
+  - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.24.0
+  - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && sudo install skaffold /usr/local/bin/
+  - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  - go get -u github.com/swaggo/swag/cmd/swag
+  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - chmod +x ./kubectl
+  - sudo mv ./kubectl /usr/local/bin/kubectl
+  - mkdir $HOME/.kube
+  - echo "$KUBE_CONFIG" | base64 --decode > $HOME/.kube/config
+script:
+   - make build lint swagger prod
+

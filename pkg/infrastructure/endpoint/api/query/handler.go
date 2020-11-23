@@ -19,7 +19,7 @@ import (
 func (c *control) handler(w http.ResponseWriter, r *http.Request) {
   token := r.Header.Get("Authorization")
   var s model.Select
-  json.NewDecoder(r.Body).Decode(&s)
+  _ = json.NewDecoder(r.Body).Decode(&s)
   result, err := c.exec(s.Query,token)
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -27,7 +27,7 @@ func main() {
 	go func() {
 		r := gin.New()
 		r.GET("/docs/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-		r.Run(":8003")
+    _ = r.Run(":8003")
 	}()
 
 	services.Start()

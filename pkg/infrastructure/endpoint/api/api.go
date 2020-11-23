@@ -22,7 +22,6 @@ type Api interface {
 
 type setup struct {
   config  *conf.Configuration
-  client  net.Client
   command command.Command
   query   query.Query
 }

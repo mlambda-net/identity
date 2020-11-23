@@ -17,3 +17,9 @@ echo $DOCKERPASS | docker login https://docker.pkg.github.com -u USERNAME --pass
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.41.2/deploy/static/provider/do/deploy.yaml
 
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.41.2/deploy/static/provider/do/deploy.yaml
+
+
+cat ~/.kube/config  | base64 | tr -d \\n | pbcopy
+cat ~/config | base64 --decode > ~/config.yaml
+
+
