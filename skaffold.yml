@@ -26,7 +26,7 @@ deploy:
     releases:
 
       - name: server
-        namespace: user
+        namespace: store
         chartPath: helm/server
         setValueTemplates:
           env: "{{.ENV}}"
@@ -39,7 +39,7 @@ deploy:
           variables.secret: "{{.SECRET_KEY}}"
 
       - name: api
-        namespace: user
+        namespace: store
         chartPath: helm/api
         setValueTemplates:
          env: "{{.ENV}}"
