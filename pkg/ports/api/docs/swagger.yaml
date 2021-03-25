@@ -1,0 +1,224 @@
+definitions:
+  model.ChangePassword:
+    properties:
+      email:
+        type: string
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
+  model.Login:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  model.Register:
+    properties:
+      lastname:
+        type: string
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  model.Select:
+    properties:
+      query:
+        type: string
+    type: object
+  model.Update:
+    properties:
+      email:
+        type: string
+      lastname:
+        type: string
+      name:
+        type: string
+    type: object
+  model.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      lastname:
+        type: string
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /graphql:
+    post:
+      parameters:
+      - description: query
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Select'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Query the user
+  /login:
+    post:
+      parameters:
+      - description: user register
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      summary: Login the user
+  /user:
+    delete:
+      parameters:
+      - description: user id
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete the user
+    post:
+      parameters:
+      - description: user register
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      summary: Creates the user
+    put:
+      parameters:
+      - description: user update
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Update'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Updates the user
+  /user/{email}:
+    get:
+      parameters:
+      - description: search by email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get the user
+  /user/change_password:
+    post:
+      parameters:
+      - description: change password
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Change the user password
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

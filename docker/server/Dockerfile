@@ -10,7 +10,7 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
-RUN go build -o /dist/server ./pkg/infrastructure/ports/server/main.go
+RUN go build -o /dist/server ./pkg/ports/server/main.go
 
 FROM alpine AS bin
 COPY --from=build /bin/grpc_health_probe ./grpc_health_probe
@@ -19,6 +19,6 @@ WORKDIR /app
 COPY --from=build /dist/server /app
 COPY env /app/env
 
-EXPOSE 9001
+EXPOSE 8090
 ENTRYPOINT ["/app/server"]
 

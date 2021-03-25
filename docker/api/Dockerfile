@@ -6,12 +6,12 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
-RUN go build -o /dist/api ./pkg/infrastructure/ports/api/main.go
+RUN go build -o /dist/api ./pkg/ports/api/main.go
 
 FROM alpine AS bin
 WORKDIR /app
 COPY --from=build /dist/api /app
 COPY ./env env
 ENV GIN_MODE=release
-EXPOSE 8001 8002 8003
+EXPOSE 8000 8001 8002
 ENTRYPOINT ["/app/api"]

@@ -20,6 +20,7 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/con
 
 
 cat ~/.kube/config  | base64 | tr -d \\n | pbcopy
+cat ~/.kube/config  | base64 | tr -d \\n | xclip -selection clipboard
 cat ~/config | base64 --decode > ~/config.yaml
 
 

@@ -3,7 +3,7 @@ package test
 import (
 	"fmt"
 	"github.com/mlambda-net/identity/pkg/application/message"
-	"github.com/mlambda-net/identity/pkg/infrastructure/endpoint/server"
+	"github.com/mlambda-net/identity/pkg/infrastructure/server"
 	"github.com/mlambda-net/net/pkg/net"
 	"github.com/mlambda-net/net/pkg/security"
 	"github.com/stretchr/testify/assert"
@@ -30,7 +30,7 @@ func changePassword(t *testing.T) {
 		Password: "123",
 	}
 
-	c := net.NewClient("localhost", "9001")
+	c := net.NewClient("localhost", "8090")
 	tk := getToken(map[string]interface{}{})
 
 
@@ -64,7 +64,7 @@ func query(t *testing.T) {
 	}
 
 
-	c := net.NewClient("localhost", "9001")
+	c := net.NewClient("localhost", "8090")
 	r, err := c.Actor("user").Token(getToken(map[string]interface{}{})).Request(query).Unwrap()
 
 	assert.Nil(t, err)
@@ -80,14 +80,14 @@ func create(t *testing.T) {
 		Password: "123",
 	}
 
-	c := net.NewClient("localhost", "9001")
+	c := net.NewClient("localhost", "8090")
 	r, err := c.Actor("auth").Request(user).Unwrap()
 	assert.Nil(t, err)
 	assert.NotNil(t, r)
 }
 
 func delete(t *testing.T) {
-	c := net.NewClient("localhost", "9001")
+	c := net.NewClient("localhost", "8090")
 	users, err := filter(c)
 	assert.Nil(t, err)
 
@@ -115,7 +115,7 @@ func filter(c net.Client) ([]*message.Result, error) {
 
 
 func update(t *testing.T) {
-	c := net.NewClient("localhost", "9001")
+	c := net.NewClient("localhost", "8090")
 	users, err := filter(c)
 	assert.Nil(t, err)
 	assert.True(t, len(users) > 0)

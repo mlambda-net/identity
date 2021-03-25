@@ -1,0 +1,25 @@
+app:
+  name: server
+  port: 8090
+  secret: 6368616e676520746869732070617373776f726420746f206120736563726574
+  db:
+    user: postgres
+    password: postgres
+    data: postgres
+    host: data
+    port: 5432
+  metric:
+    port: 8091
+  cache:
+    server: cache
+    port: 6379
+    db: 0
+    password: ""
+  index:
+    server: http://index
+    authenticate: false
+    user: ""
+    password: ""
+  email:
+    server: exchange
+    port: 80

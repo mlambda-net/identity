@@ -1,0 +1,89 @@
+# Default values for api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+env: DEV
+
+replicaCount: 1
+
+image:
+  repository: docker.pkg.github.com/mlambda-net/identity/api
+  tag: "latest"
+  pullPolicy: Always
+
+
+imagePullSecrets:
+  - name: regdocker
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/path: /check/identity/metrics
+  prometheus.io/port: "8001"
+
+podSecurityContext: {}
+
+securityContext: {}
+
+
+app:
+  name: identity
+  secret: abc
+  port: 8000
+  host: api-dev.mitienda.co.cr
+  metric:
+    port: 8001
+  docs:
+    port: 8002
+  remote:
+    host: server
+    port: 8090
+
+service:
+  type: ClusterIP
+  ports:
+     http: 8000
+     metrics: 8001
+     swagger: 8002
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: issuer-prod
+
+  hosts:
+    - host: api-dev.mitienda.co.cr
+  tls:
+    - secretName: api-tls
+      hosts:
+        - api-dev.mitienda.co.cr
+
+resources:
+   limits:
+     cpu: 50m
+     memory: 50Mi
+   requests:
+     cpu: 50m
+     memory: 50Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 50
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

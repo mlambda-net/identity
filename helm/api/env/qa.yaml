@@ -1,0 +1,12 @@
+app:
+  name: identity
+  port: 8000
+  host: api-dev.mitienda.co.cr
+  metric:
+    port: 8001
+  docs:
+    port: 8002
+  remote:
+    host: server
+    port: 8090
+

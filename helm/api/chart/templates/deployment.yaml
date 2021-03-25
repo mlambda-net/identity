@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "userapi.fullname" . }}
+  labels:
+    {{- include "userapi.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "userapi.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "userapi.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "userapi.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: VERSION
+              value: {{.Values.image.tag}}
+            - name: ENV
+              value: {{ .Values.env }}
+            - name: SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: SECRET_KEY
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: APP_NAME
+            - name: APP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: APP_PORT
+            - name: APP_VERSION
+              value: {{.Values.image.tag}}
+            - name: APP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: APP_HOST
+            - name: APP_BASE
+              value: identity
+            - name: METRIC_NAMESPACE
+              value: identity_api
+            - name: METRIC_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: METRIC_PORT
+            - name: DOCS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: DOCS_HOST
+            - name: DOCS_PATH
+              value: identity
+            - name: DOCS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: DOCS_PORT
+            - name: REMOTE_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: REMOTE_SERVER
+            - name: REMOTE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: REMOTE_PORT
+          ports:
+            - name: http
+              containerPort:  {{ .Values.app.port }}
+              protocol: TCP
+            - name: check
+              containerPort:  {{ .Values.app.metric.port }}
+              protocol: TCP
+            - name: swagger
+              containerPort: {{ .Values.app.docs.port }}
+              protocol: TCP
+
+          livenessProbe:
+            httpGet:
+              path: check/identity/live
+              port: check
+
+          readinessProbe:
+            httpGet:
+              path: check/identity/healthz
+              port: check
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

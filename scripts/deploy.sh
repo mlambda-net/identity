@@ -6,11 +6,12 @@ deploy() {
 }
 
 deploy_dev() {
-  TAG="$(git describe --tags --dirty)"
+  #TAG="$(git describe --tags --dirty)"
+  TAG="$(git describe --tags --abbrev=0)"
   export ENV="dev"
   export VERSION="${TAG:-1.0.0}"
   echo "deploying dev version " $VERSION
-  skaffold dev
+  skaffold dev -p QA
 }
 
 deploy_prod() {
@@ -18,7 +19,7 @@ deploy_prod() {
   export ENV="prod"
   export VERSION="${TAG:-1.0.0}"
   echo "deploying prod version " $VERSION
-  skaffold run
+  skaffold run -p PROD
 }
 
 echo "$DOCKERPASS" | docker login docker.pkg.github.com -u RoyGI --password-stdin

@@ -4,7 +4,7 @@ generate:
 	protoc -I=. -I=${GOPATH}/src  --gogoslick_out=./pkg/application/message user.proto
 
 swagger:
-	cd ./pkg/infrastructure/ports/api && swag init --parseDependency=true
+	cd ./pkg/ports/api && swag init --parseDependency=true
 
 migrate:
 	docker build --tag migration:1.0 -f docker/migrate/Dockerfile .

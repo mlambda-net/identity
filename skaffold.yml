@@ -7,9 +7,10 @@ metadata:
 build:
   tagPolicy:
     envTemplate:
-      template: "{{.IMAGE_NAME}}:{{.VERSION}}"
+      template: "{{.VERSION}}"
   local:
     push: true
+    useDockerCLI: true
   artifacts:
     - image: docker.pkg.github.com/mlambda-net/identity/user
       context: .
@@ -21,28 +22,23 @@ build:
       docker:
         dockerfile: docker/api/Dockerfile
 
-deploy:
-  helm:
-    releases:
+profiles:
+  - name: QA
+    deploy:
+      helm:
+        releases:
+          - name: server
+            namespace: identity
+            chartPath: helm/server/chart
+            valuesFiles: [helm/server/chart/values.yaml, helm/server/env/qa.yaml]
+            setValueTemplates:
+              image.tag: "{{.VERSION}}"
 
-      - name: server
-        namespace: store
-        chartPath: helm/server
-        setValueTemplates:
-          env: "{{.ENV}}"
-          image.tag: "{{.VERSION}}"
-          variables.user: "{{.DB_USER}}"
-          variables.password: "{{.DB_PASSWORD}}"
-          variables.host: "{{.DB_HOST}}"
-          variables.data: "{{.DB_DATA}}"
-          variables.port: "{{.DB_PORT}}"
-          variables.secret: "{{.SECRET_KEY}}"
+          - name: api
+            namespace: identity
+            chartPath: helm/api/chart
+            valuesFiles: [helm/api/chart/values.yaml, helm/api/env/qa.yaml]
+            setValueTemplates:
+             image.tag: "{{.VERSION}}"
 
-      - name: api
-        namespace: store
-        chartPath: helm/api
-        setValueTemplates:
-         env: "{{.ENV}}"
-         image.tag: "{{.VERSION}}"
-         variables.secret: "{{.SECRET_KEY}}"
 

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-config
+data:
+  ENV: "{{.Values.env}}"
+  SECRET_KEY: "{{.Values.app.secret}}"
+  APP_NAME: "{{.Values.app.name}}"
+  APP_PORT: "{{.Values.app.port}}"
+  METRIC_PORT: "{{.Values.app.metric.port}}"
+  DB_PORT:  "{{.Values.app.db.port}}"
+  DB_HOST: "{{.Values.app.db.host}}"
+  DB_DATA: "{{.Values.app.db.data}}"
+  DB_PASSWORD: "{{.Values.app.db.password}}"
+  DB_USER: "{{.Values.app.db.user}}"
+  CACHE_SERVER: "{{.Values.app.cache.server}}"
+  CACHE_PORT: "{{.Values.app.cache.port}}"
+  CACHE_DB: "{{.Values.app.cache.db}}"
+  CACHE_PASSWORD: "{{.Values.app.cache.password}}"
+  INDEX_SERVER: "{{.Values.app.index.server}}"
+  INDEX_AUTHENTICATE: "{{.Values.app.index.authenticate}}"
+  INDEX_USER: "{{.Values.app.index.user}}"
+  INDEX_PASSWORD: "{{.Values.app.index.password}}"
+  EMAIL_SERVER: "{{.Values.app.email.server}}"
+  EMAIL_PORT: "{{.Values.app.email.port}}"
+

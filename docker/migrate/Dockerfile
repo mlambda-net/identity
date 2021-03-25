@@ -1,6 +1,6 @@
 FROM flyway/flyway:latest
-COPY ./pkg/infrastructure/db /db
+COPY ./deps/db /db
 WORKDIR /db
 
-CMD ["migrate"]
+CMD ["clean", "migrate"]
 

@@ -16,6 +16,7 @@ install:
   - sudo mv ./kubectl /usr/local/bin/kubectl
   - mkdir $HOME/.kube
   - echo "$KUBE_CONFIG" | base64 --decode > $HOME/.kube/config
+
 script:
-   - make build lint swagger prod
+   - make build swagger prod
 

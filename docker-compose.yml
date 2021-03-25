@@ -18,27 +18,20 @@ services:
 
   server:
     ports:
-      - "9001:9001"
-    environment:
-      - ENV=dev
-      - DB_HOST=data
-      - DB_DATA=postgres
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_PORT=5432
-      - SECRET_KEY=6368616e676520746869732070617373776f726420746f206120736563726574
+      - "8090:8090"
+    env_file:
+      - env/dev_server.env
     build:
       context: .
       dockerfile: docker/server/Dockerfile
 
   api:
     ports:
+      - "8000:8000"
       - "8001:8001"
       - "8002:8002"
-      - "8003:8003"
-    environment:
-      - ENV=dev
-      - SECRET_KEY=6368616e676520746869732070617373776f726420746f206120736563726574
+    env_file:
+      - env/dev_api.env
     build:
       context: .
       dockerfile: docker/api/Dockerfile

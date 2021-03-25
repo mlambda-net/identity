@@ -12,12 +12,14 @@ import (
 )
 
 type userActor struct {
-	service services.UserService
+  service services.UserService
+  query   services.QueryService
 }
 
 func NewUserProps(config *utils.Configuration) *actor.Props {
 	service := services.NewUserService(config)
-	return actor.PropsFromProducer(func() actor.Actor { return &userActor{service: service} })
+	query := services.NewQueryService(config)
+	return actor.PropsFromProducer(func() actor.Actor { return &userActor{service: service, query: query} })
 }
 
 func (u *userActor) Receive(ctx actor.Context) {
@@ -31,7 +33,7 @@ func (u *userActor) Receive(ctx actor.Context) {
 		}
 
 	case *message.Update:
-		email := ctx.MessageHeader().Get("email")
+		email := ctx.MessageHeader().Get("sub")
 		if email == msg.Email {
 			u, err := u.update(msg)
 			if err != nil {
@@ -57,7 +59,7 @@ func (u *userActor) Receive(ctx actor.Context) {
 		}
 
 	case *message.ChangePassword:
-		email := ctx.MessageHeader().Get("email")
+		email := ctx.MessageHeader().Get("sub")
 		if email == msg.Email {
 			err := u.changePassword(msg)
 			if err != nil {
@@ -70,7 +72,7 @@ func (u *userActor) Receive(ctx actor.Context) {
 		}
 
 	case *message.Find:
-		email := ctx.MessageHeader().Get("email")
+		email := ctx.MessageHeader().Get("sub")
 		if email == msg.Email {
 			usr, err := u.Find(msg)
 			if err != nil {
@@ -101,7 +103,7 @@ func (u *userActor) userQuery(msg *message.Filter) (*message.Results, *core.Erro
 
 func (u *userActor) filter(spec spec.Expression) (*message.Results, *core.Error) {
 
-	users, err := u.service.Query(spec)
+	users, err := u.query.Query(spec)
 	if err != nil {
 		return nil, &core.Error{
 			Status:  500,
@@ -140,7 +142,7 @@ func (u *userActor) deleteUser(msg *message.Delete) *core.Error {
 
 func (u *userActor) update(msg *message.Update) (*message.Response, *core.Error) {
 
-	user, err := u.service.ByEmail(msg.Email)
+	user, err := u.query.ByEmail(msg.Email)
 	if err != nil {
 		return nil, &core.Error{
 			Status:  500,
@@ -163,7 +165,7 @@ func (u *userActor) update(msg *message.Update) (*message.Response, *core.Error)
 
 func (u *userActor) changePassword(msg *message.ChangePassword)  *core.Error {
 
-  usr, err := u.service.ByEmail(msg.Email)
+  usr, err := u.query.ByEmail(msg.Email)
   if err != nil {
     return  &core.Error{
       Status:  500,
@@ -202,7 +204,7 @@ func (u *userActor) changePassword(msg *message.ChangePassword)  *core.Error {
 }
 
 func (u *userActor) Find(msg *message.Find) (*message.Result, *core.Error) {
-	usr, err := u.service.ByEmail(msg.Email)
+	usr, err := u.query.ByEmail(msg.Email)
 	if err != nil {
 		return nil, &core.Error{
 			Status:  500,

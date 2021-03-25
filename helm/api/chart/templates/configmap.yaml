@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+data:
+  ENV: "{{.Values.env}}"
+  SECRET_KEY: "{{.Values.app.secret}}"
+  APP_NAME: "{{.Values.app.name}}"
+  APP_PORT: "{{.Values.app.port}}"
+  APP_HOST: "{{.Values.app.host}}"
+  METRIC_PORT: "{{.Values.app.metric.port}}"
+  DOCS_HOST: "{{.Values.app.host}}"
+  DOCS_PORT: "{{.Values.app.docs.port}}"
+  REMOTE_SERVER: "{{.Values.app.remote.host}}"
+  REMOTE_PORT: "{{.Values.app.remote.port}}"
