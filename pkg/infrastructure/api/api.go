@@ -57,12 +57,14 @@ func (s *setup) Start() {
   logrus.Infof("Start the API %s on %d", s.config.App.Host, s.config.App.Port)
   logrus.Infof("Connecting to: %s  %s", s.config.Remote.Server, s.config.Remote.Port)
   client := net.NewClient(s.config.Remote.Server, s.config.Remote.Port)
+
   user := client.Actor("user")
   auth := client.Actor("auth")
+  app := client.Actor("app")
+  role := client.Actor("role")
 
-  s.command = command.NewCommand(user, auth, s.config)
+  s.command = command.NewCommand(user, auth, app, role, s.config)
   s.query = query.NewQuery(user)
-
 
   local := net.NewApi(int32(s.config.App.Port), int32(s.config.Metric.Port))
   local.Metrics(func(mc *metrics.Configuration) {
@@ -81,7 +83,13 @@ func (s *setup) Start() {
   local.Checks(
     healthcheck.WithTimeout(5 * time.Second),
     healthcheck.WithChecker("server",healthcheck.CheckerFunc(func(ctx context.Context) error {
-     // client.Health()
+      status, err := client.Health()
+      if err != nil{
+        return err
+      }
+      if !status.Success {
+        return fmt.Errorf("the api is unhealthy %s",status.Message)
+      }
       return nil
     })),
   )
@@ -93,8 +101,6 @@ func (s *setup) Start() {
 
   server := oauth.NewOAuthServer(s.config, auth)
   server.Start()
-
-
   local.Wait()
 
 }

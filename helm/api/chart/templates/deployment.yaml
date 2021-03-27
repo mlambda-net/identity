@@ -60,6 +60,11 @@ spec:
                 configMapKeyRef:
                   name: api-config
                   key: APP_HOST
+            - name: APP_OAUTH_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: APP_OAUTH_PORT
             - name: APP_BASE
               value: identity
             - name: METRIC_NAMESPACE
@@ -91,6 +96,44 @@ spec:
                 configMapKeyRef:
                   name: api-config
                   key: REMOTE_PORT
+            - name: OAUTH_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: OAUTH_HOST
+            - name: OAUTH_WEB
+              value: /app/static
+            - name: OAUTH_CLIENTID
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: OAUTH_CLIENTID
+            - name: OAUTH_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: OAUTH_SECRET
+            - name: CACHE_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: CACHE_SERVER
+            - name: CACHE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: CACHE_PORT
+            - name: CACHE_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: CACHE_DB
+            - name: CACHE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: CACHE_PASSWORD
+
           ports:
             - name: http
               containerPort:  {{ .Values.app.port }}
@@ -100,6 +143,9 @@ spec:
               protocol: TCP
             - name: swagger
               containerPort: {{ .Values.app.docs.port }}
+              protocol: TCP
+            - name: oauth
+              containerPort: {{ .Values.app.oauth.port }}
               protocol: TCP
 
           livenessProbe:

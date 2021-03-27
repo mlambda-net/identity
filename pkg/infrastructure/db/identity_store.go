@@ -1,58 +1,87 @@
 package db
 
 import (
-	"fmt"
-	"github.com/go-pg/pg/v10"
-	"github.com/mlambda-net/identity/pkg/domain/entity"
-	"github.com/mlambda-net/identity/pkg/domain/repository"
-  "github.com/mlambda-net/identity/pkg/domain/spec"
+  "github.com/go-pg/pg/v10"
+  "github.com/google/uuid"
+  "github.com/mlambda-net/identity/pkg/domain/entity"
+  "github.com/mlambda-net/identity/pkg/domain/repository"
   "github.com/mlambda-net/identity/pkg/domain/utils"
-	"github.com/mlambda-net/monads/monad"
+  "github.com/mlambda-net/monads/monad"
+  "github.com/mlambda-net/net/pkg/ex"
+  "github.com/mlambda-net/net/pkg/spec"
 )
 
 type identityStore struct {
 	db *pg.DB
 }
 
-func (i *identityStore) ByEmail(email string) monad.Mono {
-	 user := &entity.Identity{}
-	_, err := i.db.QueryOne(user, `SELECT * FROM identities Where email = ?`, email)
-	if err != nil {
-		return monad.ToMono(err)
-	}
-
-	return monad.ToMono(user)
-}
-
-func (i *identityStore) ById(id int64) monad.Mono {
-	var user entity.Identity
-	_, err := i.db.QueryOne(&user, `SELECT * FROM identities Where id = ?`, id)
-	if err != nil {
-		return monad.ToMono(err)
-	}
-
-	return monad.ToMono(&user)
-}
-
 func (i *identityStore) Update(user *entity.Identity) monad.Mono {
-	_, err := i.db.Model(user).WherePK().Update()
-	if err != nil {
-		return monad.ToMono(err)
-	}
-	return monad.ToMono(user)
+  begin, err := i.db.Begin()
+  if err != nil {
+    return monad.ToMono(err)
+  }
+
+  err = i.purgeRights(user, begin)
+  if err != nil {
+    return monad.ToMono(err)
+  }
+
+  _, err = i.db.Exec("call user_update(?,?,?)", user.ID, user.Name, user.LastName)
+  if err != nil {
+    err := begin.Rollback()
+    if err != nil {
+      return monad.ToMono(err)
+    }
+    return monad.ToMono(err)
+  }
+
+  err  = i.addRights(user, begin)
+  if err != nil {
+    return monad.ToMono(err)
+  }
+
+  err = begin.Close()
+  if err != nil {
+    return monad.ToMono(err)
+  }
+  return monad.ToMono(user)
 }
 
-func (i *identityStore) Save(id *entity.Identity) monad.Mono {
-	_, err := i.db.Model(id).Insert()
-	if err != nil {
-		return monad.ToMono(err)
-	}
-	return monad.ToMono(id)
+func (i *identityStore) Save(user *entity.Identity) monad.Mono {
+  begin, err := i.db.Begin()
+  if err != nil {
+    return monad.ToMono(err)
+  }
+  err = i.purgeRights(user, begin)
+  if err != nil {
+    return monad.ToMono(err)
+  }
+
+  _, err = i.db.Exec("call user_add(?,?,?,?,?)", user.ID, user.Name, user.LastName, user.Email, user.Password)
+  if err != nil {
+    e := begin.Rollback()
+    if e != nil {
+      return monad.ToMono(e)
+    }
+
+    return monad.ToMono(ex.Friend("the user can not be saved", err))
+  }
+
+  err = i.addRights(user, begin)
+  if err != nil {
+    return monad.ToMono(err)
+  }
+
+  err = begin.Close()
+  if err != nil {
+    return monad.ToMono(err)
+  }
+  return monad.ToMono(user)
 }
 
-func (i *identityStore) Delete(id int64) monad.Mono {
+func (i *identityStore) Delete(id uuid.UUID) monad.Mono {
 	_, err := i.db.Model(&entity.Identity{
-		Id: id,
+		ID: id,
 	}).WherePK().Delete()
 
 	if err != nil {
@@ -61,21 +90,27 @@ func (i *identityStore) Delete(id int64) monad.Mono {
 	return monad.ToMono(nil)
 }
 
-func (i *identityStore) All(spec spec.Spec) monad.Mono {
-  var items []entity.Identity
-
-  _, err := i.db.Query(&items, fmt.Sprintf("SELECT * FROM identities where %s", spec.Query()))
+func (i *identityStore) All(spec spec.Spec) monad.Mono {var items []*entity.Identity
+  var err error
+  if spec != nil {
+    query := spec.Query("SELECT id, name, last_name, email FROM identities")
+    data := spec.Data()
+    _, err = i.db.Query(&items, query , data...)
+   } else {
+    _, err = i.db.Query(&items, "SELECT id, name, last_name, email FROM identities")
+  }
 
   if err != nil {
     monad.ToMono(err)
   }
-
   return monad.ToMono(items)
 }
 
 func (i *identityStore) Single(spec spec.Spec) monad.Mono {
-  var items []entity.Identity
-  _, err := i.db.Query(&items, fmt.Sprintf("SELECT * FROM identities where %s", spec.Query()))
+  var items []*entity.Identity
+
+  query := spec.Query( "SELECT * FROM identities")
+  _, err := i.db.Query(&items, query, spec.Data()...)
 
   if err != nil {
     monad.ToMono(err)
@@ -88,18 +123,53 @@ func (i *identityStore) Single(spec spec.Spec) monad.Mono {
   return monad.ToMono(nil)
 }
 
+func (i *identityStore) Rights( id uuid.UUID) monad.Mono {
+  var items []*entity.Role
+  query := `SELECT ro.id, ro.name, ro.description, a.id as app__id, a.name as app__name
+  FROM Roles  ro
+  INNER JOIN rights ri
+  ON ro.id = ri.roleID
+  INNER JOIN App a
+  ON ro.app = a.id
+  WHERE ri.userid = ?`
+
+  _, err := i.db.Query(&items,query, id)
+
+  if err != nil {
+    return monad.ToMono(err)
+  }
+  return  monad.ToMono(items)
+}
+
+func (i *identityStore) addRights(user *entity.Identity, begin *pg.Tx) error {
+  for _, rol := range user.Roles {
+    _, err := i.db.Exec("call rights_add(?,?)", user.ID, rol.ID)
+    if err != nil {
+      err := begin.Rollback()
+      if err != nil {
+        return err
+      }
+      return err
+    }
+  }
+  return nil
+}
+
+func (i *identityStore) purgeRights(user *entity.Identity, begin *pg.Tx) error {
+  _, err := i.db.Exec("call rights_purge(?)", user.ID)
+  if err != nil {
+    err := begin.Rollback()
+    if err != nil {
+      return err
+    }
+    return err
+  }
+  return nil
+}
 
 func NewIdentityStore(config *utils.Configuration) repository.IdentityStore {
-
-	db := pg.Connect(&pg.Options{
-		User:     config.Db.User,
-		Password: config.Db.Password,
-		Addr:     fmt.Sprintf("%s:%s", config.Db.Host, config.Db.Port),
-		Database: config.Db.Schema,
-	})
-
+	db := initializeDB(config)
 	return &identityStore{db: db}
-
 }
 
 func (i *identityStore) Close() {

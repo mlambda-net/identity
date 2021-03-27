@@ -1,0 +1,7 @@
+
+html, body, [id=root] {
+  height: 100vh;
+  margin: 0;
+  background:white url(assets/background.jpg) repeat  left center;
+}
+

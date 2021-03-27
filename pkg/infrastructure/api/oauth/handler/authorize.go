@@ -7,6 +7,8 @@ import (
 )
 
 func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
+  setupHeaders(w)
+
   store, err := session.Start(r.Context(), w, r)
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -19,12 +21,13 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
   }
   r.Form = form
 
-  store.Delete("ReturnUri")
-  store.Save()
+    store.Delete("ReturnUri")
+    store.Save()
 
-  err = h.srv.HandleAuthorizeRequest(w, r)
-  if err != nil {
-    http.Error(w, err.Error(), http.StatusBadRequest)
+    err = h.srv.HandleAuthorizeRequest(w, r)
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusBadRequest)
+    }
   }
-}
+
 

@@ -11,7 +11,7 @@ RUN go build -o /dist/api ./pkg/ports/api/main.go
 FROM alpine AS bin
 WORKDIR /app
 COPY --from=build /dist/api /app
-COPY ./env env
+COPY ./pkg/ports/api/static /app/static
 ENV GIN_MODE=release
-EXPOSE 8000 8001 8002
+EXPOSE 8000 8001 8002 8004
 ENTRYPOINT ["/app/api"]

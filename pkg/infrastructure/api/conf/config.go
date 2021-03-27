@@ -20,6 +20,13 @@ type Configuration struct {
     Url       string
   }
 
+  Cache struct {
+    Server   string `default:"localhost"`
+    Port     int    `default:"6379"`
+    Password string `default:""`
+    DB       int    `default:"0"`
+  }
+
   OAuth struct {
     Host     string
     Web      string
@@ -67,6 +74,11 @@ func LoadConfig() *Configuration {
   config.OAuth.Secret = os.Getenv("OAUTH_SECRET")
   config.OAuth.Host = os.Getenv("OAUTH_HOST")
   config.OAuth.Web = os.Getenv("OAUTH_WEB")
+
+  config.Cache.Server = os.Getenv("CACHE_SERVER")
+  config.Cache.Password = os.Getenv("CACHE_PASSWORD")
+  config.Cache.DB = toint(os.Getenv("CACHE_DB"))
+  config.Cache.Port = toint(os.Getenv("CACHE_PORT"))
 
   config.Metric.Namespace = os.Getenv("METRIC_NAMESPACE ")
   config.Metric.Port = toint(os.Getenv("METRIC_PORT"))

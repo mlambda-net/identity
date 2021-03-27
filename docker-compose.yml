@@ -1,6 +1,13 @@
 version: '3.7'
 services:
 
+  cache:
+    ports:
+      - "6379:6379"
+    build:
+      context: .
+      dockerfile: docker/cache/Dockerfile
+
   data:
     ports:
       - "5432:5432"
@@ -9,7 +16,7 @@ services:
       context: .
 
   migrate:
-    command: -configFiles=/db/flyway.conf -connectRetries=60 migrate
+    command: -configFiles=/db/flyway.conf -connectRetries=60 clean migrate
     build:
       context: .
       dockerfile: docker/migrate/Dockerfile
@@ -20,7 +27,7 @@ services:
     ports:
       - "8090:8090"
     env_file:
-      - env/dev_server.env
+      - env/local_server.env
     build:
       context: .
       dockerfile: docker/server/Dockerfile
@@ -30,8 +37,20 @@ services:
       - "8000:8000"
       - "8001:8001"
       - "8002:8002"
+      - "8004:8004"
     env_file:
-      - env/dev_api.env
+      - env/local_api.env
     build:
       context: .
       dockerfile: docker/api/Dockerfile
+
+  web:
+    ports:
+      - "80:80"
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+      args:
+        DOCKERPASS: ${DOCKERPASS}
+        ENV: dev
+

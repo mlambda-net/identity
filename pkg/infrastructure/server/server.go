@@ -2,9 +2,13 @@ package server
 
 import (
 	"fmt"
-	"github.com/mlambda-net/identity/pkg/application"
-	"github.com/mlambda-net/identity/pkg/domain/utils"
-	"github.com/mlambda-net/net/pkg/remote"
+  "github.com/mlambda-net/identity/pkg/application/app"
+  "github.com/mlambda-net/identity/pkg/application/auth"
+  "github.com/mlambda-net/identity/pkg/application/roles"
+  "github.com/mlambda-net/identity/pkg/application/user"
+  "github.com/mlambda-net/identity/pkg/domain/utils"
+  "github.com/mlambda-net/identity/pkg/infrastructure/db"
+  "github.com/mlambda-net/net/pkg/remote"
 	log "github.com/sirupsen/logrus"
 	"sync"
 )
@@ -32,22 +36,40 @@ func NewServer() Server {
 }
 
 func (s server) Start() {
+  defer func() {
+    if err := recover(); err != nil {
+      log.Println("panic occurred:", err)
+    }
+  }()
 
-	defer func() {
-		if err := recover(); err != nil {
-			log.Println("panic occurred:", err)
-		}
-	}()
+  s.LoadConfig()
+  s.remote = remote.NewServer()
+  go func() {
+    log.Info(fmt.Sprintf("starting the server %s in the port %s", s.config.App.Name, s.config.App.Port))
+    s.remote.Register("user", user.NewUserProps(s.config), true, nil)
+    s.remote.Register("auth", auth.NewAuthProps(s.config), false, []string{})
+    s.remote.Register("app", app.NewAppActor(s.config), true, nil)
+    s.remote.Register("role", roles.NewRolesProps(s.config), true,nil)
 
-	s.LoadConfig()
-	s.remote = remote.NewServer()
-	go func() {
-		log.Info(fmt.Sprintf("starting the server %s in the port %s", s.config.App.Name, s.config.App.Port))
-		s.remote.Register("user", application.NewUserProps(s.config),true, []string{})
-		s.remote.Register("auth", application.NewAuthProps(s.config),false, []string{})
-		s.remote.Start(fmt.Sprintf(":%s", s.config.App.Port))
-		s.wg.Wait()
-	}()
+    s.remote.Check(func(status *remote.Status) {
+      err := db.AliveDB(s.config)
+      if err != nil {
+        status.Add(false, "database", err.Error())
+      } else {
+        status.Add(true, "database", "ok")
+      }
+
+      err = db.AliveCache(s.config)
+      if err != nil {
+        status.Add(false, "cache", err.Error())
+      } else {
+        status.Add(true, "cache", "ok")
+      }
+    })
+
+    s.remote.Start(fmt.Sprintf(":%s", s.config.App.Port))
+    s.wg.Wait()
+  }()
 }
 
 func (s server) Stop() {

@@ -1,105 +1,73 @@
 package services
 
 import (
-  "errors"
-  "fmt"
+  "github.com/google/uuid"
   "github.com/mlambda-net/identity/pkg/domain/entity"
   "github.com/mlambda-net/identity/pkg/domain/repository"
-  "github.com/mlambda-net/identity/pkg/domain/utils"
+  "github.com/mlambda-net/identity/pkg/domain/specs"
+  utils "github.com/mlambda-net/identity/pkg/domain/utils"
   "github.com/mlambda-net/identity/pkg/infrastructure/db"
-  "github.com/mlambda-net/net/pkg/security"
-  "os"
+  types "github.com/mlambda-net/monads"
+  "github.com/mlambda-net/monads/monad"
+  "github.com/mlambda-net/net/pkg/ex"
+  "github.com/mlambda-net/net/pkg/spec"
 )
 
 type UserService interface {
-	Create(user *entity.Identity) (*entity.Identity, error)
-	Delete(id int64) error
-	Update(user *entity.Identity) error
-	ChangePassword(email string, password string) error
-	Authenticate(login string, password string) (string, error)
+	Create(user *entity.Identity) monad.Mono
+	Delete(id uuid.UUID) monad.Mono
+	Update(user *entity.Identity) monad.Mono
+	ChangePassword(email string, password string) monad.Mono
+	Authenticate(login string, password string) monad.Mono
 }
 
 type userService struct {
 	repo  repository.IdentityStore
 }
 
-func (s userService) Authenticate(login string, password string) (string, error) {
-	token := security.NewToken(os.Getenv("SECRET_KEY"))
-	rsp, err := s.repo.ByEmail(login).Unwrap()
-	if err != nil {
-		return "", err
-	}
-	usr := rsp.(*entity.Identity)
-
-	systemPwd, err := utils.Decrypt(usr.Password)
-	if err != nil {
-		return "", err
-	}
-
-	if systemPwd != password {
-		return "", errors.New("user or password mismatch")
-	}
-
-	return token.Create(map[string]interface{}{
-		"authorize": true,
-		"id":         usr.Id,
-		"name":       fmt.Sprintf("%s %s", usr.Name, usr.LastName),
-		"email":      usr.Email,
-	})
+func (s userService) Authenticate(login string, password string) monad.Mono {
+  return s.repo.Single(spec.Specify(specs.ByEmail(login))).Bind(func(any types.Any) monad.Mono {
+    usr := any.(*entity.Identity)
+    actual, e:= utils.Decrypt(usr.Password)
+    if e != nil {
+      return monad.ToMono(ex.Error(e))
+    }
+    return monad.ToMono(actual == password)
+  })
 }
 
 
-func (s userService) ChangePassword(email string, password string) error {
-	newPass, err := utils.Encrypt(password)
-	if err != nil {
-		return err
-	}
+func (s userService) ChangePassword(email string, password string) monad.Mono {
+  newPass, err := utils.Encrypt(password)
+  if err != nil {
+    return monad.ToMono(ex.Error(err))
+  }
 
-	 rsp, err := s.repo.ByEmail(email).Unwrap()
-	 if err != nil {
-	 	return err
-	 }
+  return s.repo.Single(spec.Specify(specs.ByEmail(email))).Bind(func(any types.Any) monad.Mono {
+    user := any.(*entity.Identity)
+    user.Password = newPass
+    return s.repo.Update(user)
+  })
+}
 
-	 user := rsp.(*entity.Identity)
-	 user.Password = newPass
-	 _, err = s.repo.Update(user).Unwrap()
+func (s userService) Create(user *entity.Identity) monad.Mono {
+  newPass, err := utils.Encrypt(user.Password)
+  if err != nil {
+    monad.ToMono(ex.Error(err))
+  }
+  user.Password = newPass
 
-	 return err
+	return s.repo.Save(user)
 
 }
 
-
-
-
-
-func (s userService) Create(user *entity.Identity) (*entity.Identity, error) {
-	n := s.repo.Save(user)
-	r, err := n.Unwrap()
-	if err != nil {
-		return nil, err
-	}
-	return r.(*entity.Identity), nil
+func (s userService) Delete(id uuid.UUID) monad.Mono {
+	return s.repo.Delete(id)
 }
 
-
-
-func (s userService) Delete(id int64) error {
-	_, e := s.repo.Delete(id).Unwrap()
-	if e != nil {
-		return e
-	}
-	return nil
+func (s userService) Update(user *entity.Identity) monad.Mono {
+	return s.repo.Update(user)
 }
-
-func (s userService) Update(user *entity.Identity) error {
-	_, e := s.repo.Update(user).Unwrap()
-	if e != nil {
-		return e
-	}
-	return nil
-}
-
-
 
 func NewUserService(config *utils.Configuration) UserService {
   repo := db.NewIdentityStore(config)

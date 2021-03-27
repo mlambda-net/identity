@@ -1,0 +1,39 @@
+syntax = "proto3";
+package message;
+
+
+message AppAdd {
+  string name = 1;
+  string description = 2;
+}
+
+message AppEdit {
+  string id = 1;
+  string description = 2;
+}
+
+message AppId {
+  string id = 1;
+}
+
+message AppSearch {
+}
+
+message AppFind {
+  string id = 1;
+}
+
+message AppNotFound {
+
+}
+
+message AppResult {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message AppResults {
+  repeated AppResult results = 1;
+}
+

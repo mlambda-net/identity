@@ -1,15 +1,24 @@
 syntax = "proto3";
 package message;
 
-message Create {
+
+message Register {
   string name = 1;
   string lastName =2;
   string email=3;
   string password=4;
 }
 
+message Create {
+  string name = 1;
+  string lastName =2;
+  string email=3;
+  string password=4;
+  repeated string roles = 5;
+}
+
 message Response {
-   int64 id = 1;
+   string id = 1;
 }
 
 enum Type {
@@ -33,10 +42,11 @@ message Single {
 }
 
 message Result {
-  int64 id = 1;
+  string id = 1;
   string name = 2;
   string lastName = 3;
   string email = 4;
+  repeated string roles = 5;
 }
 
 message Results {
@@ -44,13 +54,14 @@ message Results {
 }
 
 message Delete {
-  int64 id = 1;
+  string id = 1;
 }
 
 message Update {
-  string email = 1;
+  string id = 1;
   string name = 2;
   string lastName = 3;
+  repeated string roles = 4;
 }
 
 message ChangePassword {
@@ -64,9 +75,6 @@ message Authenticate {
   string password = 2;
 }
 
-message Token {
-  string value = 1;
-}
 
 message RecoverPassword {
   string email = 1;
@@ -75,3 +83,25 @@ message RecoverPassword {
 message Find {
    string email = 1;
 }
+
+message Role {
+  string app = 1;
+  string name = 2;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string lastName = 3;
+  string email = 4;
+  repeated Role roles = 5;
+}
+
+message All {
+  string filter =1;
+}
+
+message GetUser {
+  string id = 1;
+}
+

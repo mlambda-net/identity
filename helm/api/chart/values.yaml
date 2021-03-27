@@ -7,13 +7,13 @@ env: DEV
 replicaCount: 1
 
 image:
-  repository: docker.pkg.github.com/mlambda-net/identity/api
+  repository: mlambdanet/identity-api
   tag: "latest"
   pullPolicy: Always
 
 
 imagePullSecrets:
-  - name: regdocker
+  - name: image-pull-secret
 
 nameOverride: ""
 fullnameOverride: ""
@@ -42,9 +42,20 @@ app:
     port: 8001
   docs:
     port: 8002
+  oauth:
+    port: 8004
+    host: oauth-dev.mitienda.co.cr
+    clientId: identity
+    secret: 123
   remote:
     host: server
     port: 8090
+  cache:
+    server: cache
+    port: 6379
+    db: 0
+    password: ""
+
 
 service:
   type: ClusterIP
@@ -52,27 +63,38 @@ service:
      http: 8000
      metrics: 8001
      swagger: 8002
+     oauth: 8004
 
 ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: issuer-prod
-
   hosts:
     - host: api-dev.mitienda.co.cr
-  tls:
-    - secretName: api-tls
-      hosts:
-        - api-dev.mitienda.co.cr
+      paths:
+        - path: /user
+          backend:
+            serviceName: api
+            servicePort: 8000
+        - path: /swagger
+          backend:
+            serviceName: api
+            servicePort: 8002
+    - host: oauth-dev.mitienda.co.cr
+      paths:
+        - path: /
+          backend:
+            serviceName: api
+            servicePort: 8004
+
 
 resources:
    limits:
-     cpu: 50m
+     cpu: 10m
      memory: 50Mi
    requests:
-     cpu: 50m
+     cpu: 10m
      memory: 50Mi
 
 autoscaling:

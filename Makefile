@@ -2,17 +2,18 @@
 
 generate:
 	protoc -I=. -I=${GOPATH}/src  --gogoslick_out=./pkg/application/message user.proto
+	protoc -I=. -I=${GOPATH}/src  --gogoslick_out=./pkg/application/message app.proto
+	protoc -I=. -I=${GOPATH}/src  --gogoslick_out=./pkg/application/message rol.proto
 
 swagger:
 	cd ./pkg/ports/api && swag init --parseDependency=true
 
 migrate:
-	docker build --tag migration:1.0 -f docker/migrate/Dockerfile .
-	docker run --rm  --name migration --network host migration:1.0
+	docker-compose -f docker-compose.yml up -d --build migrate
 
 build:
-	go build -o ./dist/server ./pkg/infrastructure/ports/server/main.go
-	go build -o ./dist/api  ./pkg/infrastructure/ports/api/main.go
+	go build -o ./dist/server ./pkg/ports/server/main.go
+	go build -o ./dist/api  ./pkg/ports/api/main.go
 lint:
 	golangci-lint run
 

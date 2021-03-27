@@ -16,7 +16,7 @@ import (
 // @Failure 500 {string} string "Internal error"
 // @Router /user [delete]
 func (c *control) deleteUser(w http.ResponseWriter, r *http.Request) {
-	var id int64
+	var id string
   _ = json.NewDecoder(r.Body).Decode(&id)
 	token := r.Header.Get("Authorization")
 	_, e := c.user.Token(token).Request(&message.Delete{Id: id}).Unwrap()

@@ -8,29 +8,64 @@ build:
   tagPolicy:
     envTemplate:
       template: "{{.VERSION}}"
+
   local:
     push: true
     useDockerCLI: true
+
   artifacts:
-    - image: docker.pkg.github.com/mlambda-net/identity/user
+    - image: mlambdanet/identity-server
       context: .
       docker:
         dockerfile: docker/server/Dockerfile
 
-    - image: docker.pkg.github.com/mlambda-net/identity/api
+    - image: mlambdanet/identity-api
       context: .
       docker:
         dockerfile: docker/api/Dockerfile
+
+    - image: mlambdanet/identity-web
+      context: .
+      docker:
+        dockerfile: docker/web/Dockerfile
+        buildArgs:
+          ENV: "{{.ENV}}"
+          DOCKERPASS: "{{.DOCKERPASS}}"
+
+    - image: mlambdanet/identity-cache
+      context: .
+      docker:
+        dockerfile: docker/cache/Dockerfile
+
+    - image: mlambdanet/identity-index
+      context: .
+      docker:
+        dockerfile: docker/index/Dockerfile
+
 
 profiles:
   - name: QA
     deploy:
       helm:
         releases:
+          - name: cache
+            namespace: identity
+            chartPath: helm/cache
+            valuesFiles: [helm/cache/values.yaml]
+            setValueTemplates:
+              image.tag: "{{.VERSION}}"
+
           - name: server
             namespace: identity
             chartPath: helm/server/chart
             valuesFiles: [helm/server/chart/values.yaml, helm/server/env/qa.yaml]
+            setValueTemplates:
+              image.tag: "{{.VERSION}}"
+
+          - name: web
+            namespace: identity
+            chartPath: helm/web/chart
+            valuesFiles: [helm/web/chart/values.yaml, helm/web/env/qa.yaml]
             setValueTemplates:
               image.tag: "{{.VERSION}}"
 
@@ -39,6 +74,4 @@ profiles:
             chartPath: helm/api/chart
             valuesFiles: [helm/api/chart/values.yaml, helm/api/env/qa.yaml]
             setValueTemplates:
-             image.tag: "{{.VERSION}}"
-
-
+              image.tag: "{{.VERSION}}"

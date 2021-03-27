@@ -1,0 +1,46 @@
+syntax = "proto3";
+package message;
+
+
+message RoleId {
+  string id = 1;
+}
+
+message RoleAdd {
+  string name = 1;
+  string app = 2;
+  string description = 3;
+}
+
+message RoleEdit {
+  string id = 1;
+  string description = 2;
+}
+
+message RoleDelete {
+  string id = 1;
+}
+
+message RoleGet {
+  string id = 1;
+}
+
+message RoleSearch {
+  string filter = 1;
+}
+
+message RoleResult {
+  string id = 1;
+  string app = 2;
+  string appName = 3;
+  string name = 4;
+  string description = 5;
+}
+
+message RoleResults {
+  repeated RoleResult results = 1;
+}
+
+message RoleNotFound {
+
+}

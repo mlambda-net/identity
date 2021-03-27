@@ -15,11 +15,10 @@ import (
 // @Failure 500 {string} string "Internal error"
 // @Router /login [post]
 func (c *control) login(w http.ResponseWriter, r *http.Request) {
-
   var login model.Login
   _ = json.NewDecoder(r.Body).Decode(&login)
 
-  token, err := c.oauth.PasswordCredentialsToken(r.Context(), "yordivad@gmail.com", "123")
+  token, err := c.oauth.PasswordCredentialsToken(r.Context(), login.Email, login.Password)
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
   }

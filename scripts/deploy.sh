@@ -6,12 +6,11 @@ deploy() {
 }
 
 deploy_dev() {
-  #TAG="$(git describe --tags --dirty)"
-  TAG="$(git describe --tags --abbrev=0)"
+  TAG="$(git describe --tags --dirty)"
   export ENV="dev"
   export VERSION="${TAG:-1.0.0}"
   echo "deploying dev version " $VERSION
-  skaffold dev -p QA
+  skaffold run -p QA
 }
 
 deploy_prod() {

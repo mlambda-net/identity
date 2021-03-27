@@ -1,5 +1,7 @@
 
-kubectl create secret docker-registry regdocker --docker-server=docker.pkg.github.com --docker-username=RoyGI --docker-password=$DOCKERPASS
+kubectl create secret docker-registry image-pull-secret -n identity --docker-server=docker.pkg.github.com --docker-username=RoyGI --docker-password=$DOCKERPASS
+
+kubectl patch serviceaccount default -p "{\"imagePullSecrets\": [{\"name\": \"image-pull-secret\"}]}" -n identity
 
 
 kubectl create namespace user

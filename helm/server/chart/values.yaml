@@ -8,10 +8,13 @@ env: DEV
 replicaCount: 1
 
 image:
-  repository: docker.pkg.github.com/mlambda-net/identity/
+  repository: mlambdanet/identity-server
   name: user
   tag: "latest"
   pullPolicy: Always
+
+imagePullSecrets:
+  - name: image-pull-secret
 
 
 app:
@@ -41,8 +44,6 @@ app:
     port: 80
 
 
-imagePullSecrets:
-  - name: regdocker
 
 nameOverride: ""
 fullnameOverride: ""
@@ -68,21 +69,17 @@ ingress:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-    cert-manager.io/cluster-issuer: issuer-prod
 
   hosts:
     - host: server-dev.mitienda.co.cr
-  tls:
-    - secretName: server-tls
-      hosts:
-        - server-dev.mitienda.co.cr
+
 
 resources:
    limits:
-     cpu: 50m
+     cpu: 10m
      memory: 50Mi
    requests:
-     cpu: 50m
+     cpu: 10m
      memory: 50Mi
 
 autoscaling:

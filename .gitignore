@@ -2,3 +2,10 @@
 /vendor/
 .idea
 /dist
+
+node_modules
+web/build
+
+web/.eslintcache
+
+web/package-lock.json

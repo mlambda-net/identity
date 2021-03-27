@@ -17,8 +17,7 @@ import (
 // @Failure 500 {string} string "Internal error"
 // @Router /user/change_password [post]
 func (c *control) changePassword(w http.ResponseWriter, r *http.Request) {
-
-	var register model.ChangePassword
+  var register model.ChangePassword
 
   _ = json.NewDecoder(r.Body).Decode(&register)
 	token := r.Header.Get("Authorization")

@@ -1,4 +1,114 @@
 definitions:
+  message.AppAdd:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  message.AppEdit:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+    type: object
+  message.AppId:
+    properties:
+      id:
+        type: string
+    type: object
+  message.AppResult:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  message.AppResults:
+    properties:
+      results:
+        items:
+          $ref: '#/definitions/message.AppResult'
+        type: array
+    type: object
+  message.Create:
+    properties:
+      email:
+        type: string
+      lastName:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+    type: object
+  message.Register:
+    properties:
+      email:
+        type: string
+      lastName:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  message.Result:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+      name:
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+    type: object
+  message.RoleAdd:
+    properties:
+      app:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  message.RoleEdit:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+    type: object
+  message.RoleId:
+    properties:
+      id:
+        type: string
+    type: object
+  message.RoleResult:
+    properties:
+      app:
+        type: string
+      appName:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   model.ChangePassword:
     properties:
       email:
@@ -15,15 +125,11 @@ definitions:
       password:
         type: string
     type: object
-  model.Register:
+  model.Profile:
     properties:
-      lastname:
-        type: string
-      login:
+      email:
         type: string
       name:
-        type: string
-      password:
         type: string
     type: object
   model.Select:
@@ -40,20 +146,113 @@ definitions:
       name:
         type: string
     type: object
-  model.User:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      lastname:
-        type: string
-      name:
-        type: string
-    type: object
 info:
   contact: {}
 paths:
+  /app:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/message.AppResult'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get Applications
+    post:
+      parameters:
+      - description: app
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/message.AppAdd'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.AppId'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add the app
+    put:
+      parameters:
+      - description: app
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/message.AppEdit'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.AppId'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: edit the app
+  /app/{id}:
+    get:
+      parameters:
+      - description: search by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.AppResults'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: Not found
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get the app
   /graphql:
     post:
       parameters:
@@ -98,6 +297,173 @@ paths:
           schema:
             type: string
       summary: Login the user
+  /profile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Profile'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: the profile
+  /register:
+    post:
+      parameters:
+      - description: user register
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/message.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      summary: Register the user
+  /role:
+    delete:
+      parameters:
+      - description: role id
+        in: body
+        name: data
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete role
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/message.RoleResult'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get Roles
+    post:
+      parameters:
+      - description: role
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/message.RoleAdd'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.RoleId'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add the role
+    put:
+      parameters:
+      - description: app
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/message.RoleEdit'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.RoleId'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: edit the role
+  /role/{id}:
+    get:
+      parameters:
+      - description: search by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.RoleResult'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: Not found
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get the role
   /user:
     delete:
       parameters:
@@ -123,14 +489,41 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Delete the user
+    get:
+      parameters:
+      - description: search by filter
+        in: query
+        name: filter
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/message.Result'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get users
     post:
       parameters:
-      - description: user register
+      - description: user create
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/model.Register'
+          $ref: '#/definitions/message.Create'
       produces:
       - application/json
       responses:
@@ -165,12 +558,12 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Updates the user
-  /user/{email}:
+  /user/{id}:
     get:
       parameters:
-      - description: search by email
+      - description: search by id
         in: path
-        name: email
+        name: id
         required: true
         type: string
       produces:
@@ -179,7 +572,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: '#/definitions/message.Result'
         "401":
           description: Unauthorized
           schema:
@@ -190,7 +583,7 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: Get the user
+      summary: Get the user by id
   /user/change_password:
     post:
       parameters:

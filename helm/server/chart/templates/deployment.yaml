@@ -31,12 +31,14 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           ports:
             - name: gprc
-              containerPort: 9001
+              containerPort: 8090
               protocol: TCP
+
           livenessProbe:
             initialDelaySeconds: 5
             exec:

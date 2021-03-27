@@ -14,8 +14,8 @@ type OAuth interface {
 }
 
 type oAuth struct {
-  conf *conf.Configuration
-  auth net.Request
+  conf  *conf.Configuration
+  auth  net.Request
 }
 
 func NewOAuthServer(conf *conf.Configuration, auth net.Request) OAuth {
@@ -35,6 +35,7 @@ func (o *oAuth) Start() {
     http.HandleFunc("/authorize", h.Authorize)
     http.HandleFunc("/token", h.Token)
     http.HandleFunc("/fail", h.Fail)
+    http.HandleFunc("/.well-known/openid-configuration", h.WellKnow)
     log.Printf("OAuth is running at %s port.", o.conf.App.OAuthPort)
     log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", o.conf.App.OAuthPort), nil))
   }()

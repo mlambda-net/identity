@@ -51,7 +51,7 @@ func changePassword(t *testing.T) {
 		Password: "132",
 	}).Unwrap()
 
-	token := rsp.(*message.Token).Value
+	token := rsp.(*message.User).Name
 	assert.NotNil(t, token)
 	assert.Nil(t, err)
 

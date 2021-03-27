@@ -9,6 +9,7 @@ import (
 
 func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 
+  setupHeaders(w)
   store, err := session.Start(r.Context(), w, r)
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -26,7 +27,7 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
     user := r.Form.Get("username")
     password := r.Form.Get("password")
 
-    _, err := h.auth.Request(&message.Authenticate{
+    resp, err := h.auth.Request(&message.Authenticate{
       Email:    user,
       Password: password,
     }).Unwrap()
@@ -34,12 +35,13 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
     if err != nil {
       w.Header().Set("Location", "/fail")
       w.WriteHeader(http.StatusFound)
-      //http.Error(w, err.Error(), http.StatusInternalServerError)
       return
     }
 
-    store.Set("LoggedInUserID", user)
+    usr := resp.(*message.User)
+    store.Set("LoggedInUserID",usr.Id)
     _ = store.Save()
+    h.cache.Set(usr.Id, usr)
 
     w.Header().Set("Location", "/auth")
     w.WriteHeader(http.StatusFound)

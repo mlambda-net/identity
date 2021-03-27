@@ -19,5 +19,9 @@ spec:
       targetPort: swagger
       protocol: TCP
       name: swagger
+    - port: {{ .Values.service.ports.oauth }}
+      targetPort: oauth
+      protocol: TCP
+      name: oauth
   selector:
     {{- include "userapi.selectorLabels" . | nindent 4 }}

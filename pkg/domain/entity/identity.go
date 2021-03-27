@@ -1,16 +1,27 @@
 package entity
 
+import "github.com/google/uuid"
+
 type Identity struct {
-	Id       int64
-	Name     string
-	LastName string
-	Email    string
-	Password string
+  ID   uuid.UUID
+  Name string
+  LastName string
+  Email    string
+  Password string
+  Roles    []*Role
 }
 
-func NewIdentityFromRegister(name string, lastName string, email string) *Identity {
+func (i *Identity) RoleIds() []string {
+  roles := make([]string,0)
+  for _, role := range i.Roles {
+    roles = append(roles, role.ID.String())
+  }
+  return roles
+}
 
-	return &Identity{
+
+func NewIdentityFromRegister(name string, lastName string, email string) *Identity {
+  return &Identity{
 		Name:     name,
 		LastName: lastName,
 		Email:    email,
