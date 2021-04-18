@@ -8,6 +8,7 @@ import Progress from "../../components/progress";
 import ToolBar from "../../components/toolbar";
 import Box from "@material-ui/core/Box";
 import SearchAdorn from "../../components/search";
+import {theme} from "../../theme";
 
 const styles = (theme) => ({
   root: {
@@ -30,8 +31,15 @@ const styles = (theme) => ({
   },
   cardBox: {
     width: 'calc(100% - 11px)',
-    height: '565px',
     margin: '20px 10px',
+    [theme.breakpoints.up('xs')]: {
+      height: '300px'
+    },
+
+    [theme.breakpoints.up('md')]: {
+      height: '565px'
+    },
+
   },
   filter: {
     display: 'flex',

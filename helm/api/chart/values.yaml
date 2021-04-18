@@ -58,7 +58,7 @@ app:
 
 
 service:
-  type: ClusterIP
+  type: NodePort
   ports:
      http: 8000
      metrics: 8001

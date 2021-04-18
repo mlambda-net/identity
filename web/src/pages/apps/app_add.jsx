@@ -85,7 +85,6 @@ class AppAdd extends React.Component {
                            onChange={e => this.setState({description: e.target.value})}/>
               </Grid>
 
-
             </Grid>
           </div>
           <Divider/>

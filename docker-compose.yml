@@ -51,6 +51,5 @@ services:
       context: .
       dockerfile: docker/web/Dockerfile
       args:
-        DOCKERPASS: ${DOCKERPASS}
         ENV: dev
-
+        PACKTOKEN: ${PACKTOKEN}

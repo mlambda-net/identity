@@ -47,9 +47,24 @@ const styles = (themes) => ({
 
   region: {
     margin: 'auto',
-    width: '70%',
     height: 'calc(100% - 65px)',
     alignItems: 'center',
+
+    [theme.breakpoints.up('sm')]: {
+      width: '100%'
+    },
+
+    [theme.breakpoints.up('md')]: {
+      width: '90%'
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      width: '80%'
+    },
+
+    [theme.breakpoints.up('xl')]: {
+      width: '70%'
+    },
   },
 
   component: {

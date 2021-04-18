@@ -7,6 +7,13 @@ import (
 
 func GetStore() *store.ClientStore {
   clientStore := store.NewClientStore()
+
+  clientStore.Set("identity", &models.Client{
+    ID:     "identity",
+    Secret: "FWEBzvCT8o5PtCHGR7OSC8YMkXdVi98N",
+    Domain: "https://identity.mitienda.co.cr",
+  })
+
   clientStore.Set("abc", &models.Client{
     ID:     "abc",
     Secret: "123",

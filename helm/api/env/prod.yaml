@@ -1,0 +1,58 @@
+app:
+  name: identity
+  secret: abc
+  port: 8000
+  host: api.mitienda.co.cr
+  metric:
+    port: 8001
+  docs:
+    port: 8002
+  oauth:
+    host: oauth.mitienda.co.cr
+    port: 8004
+    clientId: identity
+    secret: 123
+  remote:
+    host: server
+    port: 8090
+  cache:
+    server: cache
+    port: 6379
+    db: 0
+    password: ""
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: issuer-prod
+  hosts:
+    - host: api.mitienda.co.cr
+      paths:
+        - path: /identity
+          backend:
+            serviceName: api
+            servicePort: 8000
+
+    - host: docs.mitienda.co.cr
+      paths:
+        - path: /identity/swagger
+          backend:
+            serviceName: api
+            servicePort: 8002
+
+    - host: oauth.mitienda.co.cr
+      paths:
+        - path: /
+          backend:
+            serviceName: api
+            servicePort: 8004
+
+  tls:
+    - secretName: api-tls
+      hosts:
+        - api.mitienda.co.cr
+        - docs.mitienda.co.cr
+        - oauth.mitienda.co.cr
+

@@ -13,7 +13,7 @@ func (s *server) LoadConfig() {
 
   s.config.App.Name = os.Getenv("APP_NAME")
   s.config.App.Port = os.Getenv("APP_PORT")
-  s.config.App.Version = os.Getenv("1.0.0")
+  s.config.App.Version = os.Getenv("APP_VERSION")
 
   s.config.Metric.Namespace = os.Getenv("METRIC_NAMESPACE")
   s.config.Metric.Port = os.Getenv("METRIC_PORT")

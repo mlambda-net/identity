@@ -2,8 +2,8 @@
 FROM node:alpine AS build
 
 WORKDIR /app
-ARG DOCKERPASS
 ARG ENV
+ARG PACKTOKEN
 ENV PATH /app/node_modules/.bin:$PATH
 COPY ./web/package.json ./
 COPY ./web/package-lock.json ./

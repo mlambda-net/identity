@@ -21,8 +21,15 @@ const styles = (theme) => ({
     margin:  theme.spacing(2, 3)
   },
   box: {
-    margin: theme.spacing(5, 10),
-    minHeight: '450px'
+    [theme.breakpoints.up('xs')]: {
+      margin: theme.spacing(2, 2),
+      height: '300px'
+    },
+
+    [theme.breakpoints.up('md')]: {
+      margin: theme.spacing(5, 10),
+      height: '450px'
+    },
   },
   actions: {
     margin:  theme.spacing(1),

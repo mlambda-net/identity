@@ -55,6 +55,7 @@ func (s server) Start() {
       err := db.AliveDB(s.config)
       if err != nil {
         status.Add(false, "database", err.Error())
+        log.Errorf("The database  is not available. %s", err.Error())
       } else {
         status.Add(true, "database", "ok")
       }
@@ -62,12 +63,24 @@ func (s server) Start() {
       err = db.AliveCache(s.config)
       if err != nil {
         status.Add(false, "cache", err.Error())
+        log.Errorf("The cache is not available. %s", err.Error())
       } else {
         status.Add(true, "cache", "ok")
       }
     })
 
     s.remote.Start(fmt.Sprintf(":%s", s.config.App.Port))
+
+    err := db.AliveDB(s.config)
+    if err != nil {
+      log.Errorf("The database  is not available. %s", err.Error())
+    }
+
+    err  = db.AliveCache(s.config)
+    if err != nil {
+      log.Errorf("The cache is not available. %s", err.Error())
+    }
+
     s.wg.Wait()
   }()
 }
