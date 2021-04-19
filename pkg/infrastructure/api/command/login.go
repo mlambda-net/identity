@@ -20,10 +20,11 @@ func (c *control) login(w http.ResponseWriter, r *http.Request) {
 
   token, err := c.oauth.PasswordCredentialsToken(r.Context(), login.Email, login.Password)
   if err != nil {
-    http.Error(w, err.Error(), http.StatusInternalServerError)
+    e := err.Error()
+    http.Error(w, e, http.StatusInternalServerError)
+  } else {
+    _ = json.NewEncoder(w).Encode(token)
+
   }
-
-  _ = json.NewEncoder(w).Encode(token)
-
 
 }

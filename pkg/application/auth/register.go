@@ -2,6 +2,7 @@ package auth
 
 import (
   "errors"
+  "github.com/google/uuid"
   "github.com/mlambda-net/identity/pkg/application/message"
   "github.com/mlambda-net/identity/pkg/domain/entity"
   types "github.com/mlambda-net/monads"
@@ -15,7 +16,7 @@ func (a *authActor) register(msg *message.Register) core.Resolver {
     return resolve.Error(ex.Error(errors.New("the password can not be empty")))
   }
   user := entity.NewIdentityFromRegister(msg.Name, msg.LastName, msg.Email)
-
+  user.ID = uuid.New()
   return resolve.Mono( a.service.Create(user)).Then(func(any types.Any) types.Any {
     return &message.Response{Id: any.(*entity.Identity).ID.String()}
   })

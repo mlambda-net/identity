@@ -10,8 +10,14 @@ func GetStore() *store.ClientStore {
 
   clientStore.Set("identity", &models.Client{
     ID:     "identity",
-    Secret: "FWEBzvCT8o5PtCHGR7OSC8YMkXdVi98N",
+    Secret: "xXBqrnOokTId8IOj",
     Domain: "https://identity.mitienda.co.cr",
+  })
+
+  clientStore.Set("identityapi", &models.Client{
+    ID:     "identityapi",
+    Secret: "wY91HaUBggRGdL70",
+    Domain: "https://api.mitienda.co.cr",
   })
 
   clientStore.Set("abc", &models.Client{
@@ -20,10 +26,10 @@ func GetStore() *store.ClientStore {
     Domain: "http://localhost:3000",
   })
 
-  clientStore.Set("identity", &models.Client{
-    ID:     "identity",
+  clientStore.Set("localhost", &models.Client{
+    ID:     "localhost",
     Secret: "123",
-    Domain: "http://localhost",
+    Domain: "http://localhost:8002",
   })
 
   clientStore.Set("swagger", &models.Client{

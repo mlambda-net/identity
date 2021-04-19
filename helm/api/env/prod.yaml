@@ -8,10 +8,10 @@ app:
   docs:
     port: 8002
   oauth:
-    host: oauth.mitienda.co.cr
-    port: 8004
-    clientId: identity
-    secret: 123
+    host: https://oauth.mitienda.co.cr
+    port: 443
+    clientId: identityapi
+    secret: wY91HaUBggRGdL70
   remote:
     host: server
     port: 8090
