@@ -21,7 +21,7 @@ require (
 	github.com/graphql-go/graphql v0.7.9
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mlambda-net/monads v1.0.4
-	github.com/mlambda-net/net v1.0.39
+	github.com/mlambda-net/net v1.0.40
 	github.com/orcaman/concurrent-map v0.0.0-20190826125027-8c72a8bb44f6 // indirect
 	github.com/prometheus/common v0.15.0 // indirect
 	github.com/sirupsen/logrus v1.7.0

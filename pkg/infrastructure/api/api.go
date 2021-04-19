@@ -11,6 +11,7 @@ import (
   "github.com/mlambda-net/net/pkg/metrics"
   "github.com/mlambda-net/net/pkg/net"
   "github.com/sirupsen/logrus"
+  "os"
   "time"
 )
 
@@ -54,6 +55,11 @@ func (s *setup) GetHost() string {
 }
 
 func (s *setup) Start() {
+  logrus.SetFormatter(&logrus.TextFormatter{
+    FullTimestamp: true,
+  })
+  logrus.SetOutput(os.Stdout)
+
   logrus.Infof("Start the API %s on %d", s.config.App.Host, s.config.App.Port)
   logrus.Infof("Connecting to: %s  %s", s.config.Remote.Server, s.config.Remote.Port)
   client := net.NewClient(s.config.Remote.Server, s.config.Remote.Port)

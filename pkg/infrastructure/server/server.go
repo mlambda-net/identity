@@ -10,7 +10,8 @@ import (
   "github.com/mlambda-net/identity/pkg/infrastructure/db"
   "github.com/mlambda-net/net/pkg/remote"
 	log "github.com/sirupsen/logrus"
-	"sync"
+  "os"
+  "sync"
 )
 
 type Server interface {
@@ -36,6 +37,13 @@ func NewServer() Server {
 }
 
 func (s server) Start() {
+
+  log.SetFormatter(&log.TextFormatter{
+    FullTimestamp: true,
+  })
+  log.SetOutput(os.Stdout)
+
+
   defer func() {
     if err := recover(); err != nil {
       log.Println("panic occurred:", err)
