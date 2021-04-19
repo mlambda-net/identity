@@ -54,10 +54,10 @@ func (s server) Start() {
   s.remote = remote.NewServer()
   go func() {
     log.Info(fmt.Sprintf("starting the server %s in the port %s", s.config.App.Name, s.config.App.Port))
-    s.remote.Register("user", user.NewUserProps(s.config), true, nil)
+    s.remote.Register("user", user.NewUserProps(s.config), true, []string{"identity-admin"})
     s.remote.Register("auth", auth.NewAuthProps(s.config), false, []string{})
-    s.remote.Register("app", app.NewAppActor(s.config), true, nil)
-    s.remote.Register("role", roles.NewRolesProps(s.config), true,nil)
+    s.remote.Register("app", app.NewAppActor(s.config), true, []string{"identity-admin"})
+    s.remote.Register("role", roles.NewRolesProps(s.config), true,[]string{"identity-admin"})
 
     s.remote.Check(func(status *remote.Status) {
       err := db.AliveDB(s.config)
