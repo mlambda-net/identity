@@ -15,15 +15,13 @@ type well struct {
 }
 
 func (h *handler) WellKnow(w http.ResponseWriter, r *http.Request) {
-
   setupHeaders(w)
-
   w.Header().Set("content-type","application/json")
   //https://docs.akana.com/cm/api_oauth/oauth_discovery/m_oauth_getOpenIdConnectWellknownConfiguration.htm
   _ = json.NewEncoder(w).Encode( &well{
-    Issuer: "http://localhost:8004",
-    AuthorizationEndpoint: "http://localhost:8004/authorize",
-    TokenEndpoint: "http://localhost:8004/authorize",
+    Issuer: "https://oauth.mitienda.co.cr",
+    AuthorizationEndpoint: "https://oauth.mitienda.co.cr/authorize",
+    TokenEndpoint: "https://oauth.mitienda.co.cr/token",
     ScopesSupported: []string{"all"},
     ResponseTypesSupported: []string{"code", "token" },
     GranTypesSupported: []string{"authorization_code", "implicit","password", "client_credentials"},
