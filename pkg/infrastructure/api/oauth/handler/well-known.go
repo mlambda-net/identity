@@ -15,7 +15,7 @@ type well struct {
 }
 
 func (h *handler) WellKnow(w http.ResponseWriter, r *http.Request) {
-  setupHeaders(w)
+  setupHeaders(w,r)
   w.Header().Set("content-type","application/json")
   //https://docs.akana.com/cm/api_oauth/oauth_discovery/m_oauth_getOpenIdConnectWellknownConfiguration.htm
   _ = json.NewEncoder(w).Encode( &well{

@@ -7,7 +7,7 @@ import (
 )
 
 func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
-  setupHeaders(w)
+  setupHeaders(w,r)
 
   store, err := session.Start(r.Context(), w, r)
   if err != nil {
