@@ -13,7 +13,7 @@ type control struct {
 }
 
 func (c *control) Register(r net.Route) {
-  r.AddRoute("graphql", "/api/graphql", true, "POST", c.handler)
+  r.AddRoute("graphql", "/api/graphql", nil,true, "POST", c.handler)
 }
 
 func NewQuery( user net.Request) Query  {

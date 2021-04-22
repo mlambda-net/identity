@@ -7,7 +7,6 @@ import (
   "github.com/go-redis/redis/v8"
   "github.com/mlambda-net/identity/pkg/domain/utils"
   "github.com/sirupsen/logrus"
-  "time"
 )
 
 func  serialize(obj interface{}) []byte  {
@@ -35,9 +34,7 @@ func initializeDB(config *utils.Configuration) *pg.DB {
     Password: config.Db.Password,
     Addr:     fmt.Sprintf("%s:%s", config.Db.Host, config.Db.Port),
     Database: config.Db.Schema,
-    MinIdleConns: 5,
-    PoolSize: 10,
-    MaxConnAge: 10 * time.Minute ,
+    PoolSize: 20,
   })
   return db
 }

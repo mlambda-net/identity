@@ -29,13 +29,14 @@ func GetStore() *store.ClientStore {
   clientStore.Set("localhost", &models.Client{
     ID:     "localhost",
     Secret: "123",
-    Domain: "http://localhost:8002",
+    Domain: "http://localhost:8000",
   })
 
   clientStore.Set("swagger", &models.Client{
     ID:     "swagger",
     Secret: "123",
-    Domain: "http://localhost",
+    Domain: "http://localhost:8002",
   })
+
   return clientStore
 }

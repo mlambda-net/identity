@@ -24,7 +24,5 @@ func (c *control) login(w http.ResponseWriter, r *http.Request) {
     http.Error(w, e, http.StatusInternalServerError)
   } else {
     _ = json.NewEncoder(w).Encode(token)
-
   }
-
 }
