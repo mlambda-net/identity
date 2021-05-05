@@ -35,13 +35,11 @@ func (c *claimsAccess) Token(ctx context.Context, data *oauth2.GenerateBasic, is
   var user *message.User
   c.cache.Get(data.UserID, &user)
 
-  roles := make( []role,0)
-  for _, r := range user.Roles{
-    roles = append(roles, role{
-      App:  r.App,
-      Name: r.Name,
-    })
+  roles := make( []string,0)
+  for _, r := range user.Roles {
+    roles = append(roles, fmt.Sprintf("%s_%s", strings.ToLower(r.App), strings.ToLower(r.Name)))
   }
+
 
   claims := &claims{
       Audience:  data.Client.GetID(),
@@ -49,7 +47,7 @@ func (c *claimsAccess) Token(ctx context.Context, data *oauth2.GenerateBasic, is
       ExpiresAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
       Issuer: c.conf.OAuth.Host,
       Email: user.Email,
-      Name:  fmt.Sprintf("%s %s", user.Name, user.LastName),
+      Name:  fmt.Sprintf("%s_%s", user.Name, user.LastName),
       Roles: roles,
   }
 

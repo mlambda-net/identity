@@ -2,10 +2,7 @@ package handler
 
 import "github.com/dgrijalva/jwt-go"
 
-type role struct {
-  App string `json:"app"`
-  Name string `json:"name"`
-}
+
 
 type claims struct {
   Audience  string   `json:"aud,omitempty"`
@@ -17,7 +14,7 @@ type claims struct {
   Subject   string   `json:"sub,omitempty"`
   Email     string   `json:"email,omitempty"`
   Name      string   `json:"name,omitempty"`
-  Roles     []role `json:"roles"`
+  Roles     []string `json:"roles"`
 }
 
 func (c claims) Valid() error {
