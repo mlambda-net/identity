@@ -2,17 +2,11 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: issuer-dev
 
   hosts:
-    - host: identity-dev.mitienda.co.cr
+    - host: identity.mitienda.co.cr
       paths:
         - path: /
           backend:
             serviceName: web
             servicePort: 80
-  tls:
-    - secretName: web-tls
-      hosts:
-        - identity-dev.mitienda.co.cr

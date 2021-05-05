@@ -11,13 +11,13 @@ func GetStore() *store.ClientStore {
   clientStore.Set("identity", &models.Client{
     ID:     "identity",
     Secret: "xXBqrnOokTId8IOj",
-    Domain: "https://identity.mitienda.co.cr",
+    Domain: "http://identity.mitienda.co.cr",
   })
 
   clientStore.Set("identityapi", &models.Client{
     ID:     "identityapi",
     Secret: "wY91HaUBggRGdL70",
-    Domain: "https://api.mitienda.co.cr",
+    Domain: "http://api.mitienda.co.cr",
   })
 
   clientStore.Set("abc", &models.Client{
