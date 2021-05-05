@@ -11,8 +11,8 @@ type IdentityStore interface {
 	Save(id *entity.Identity) monad.Mono
 	Delete(id uuid.UUID) monad.Mono
 	Update(user *entity.Identity) monad.Mono
-	  Single(spec spec.Spec) monad.Mono
-  All(spec spec.Spec) monad.Mono
-  Rights(id uuid.UUID) monad.Mono
-  Close()
+	Single(spec spec.Spec) monad.Mono
+	All(spec spec.Spec) monad.Mono
+	Rights(id uuid.UUID) monad.Mono
+	Close()
 }
