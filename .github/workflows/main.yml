@@ -27,6 +27,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # add enviroment variables
+      - name: add variables
+        run: source /home/roy/env.settings
+
       # Runs a single command using the runners shell
       - name: Deploying
         run: ./scripts/deploy.sh dev

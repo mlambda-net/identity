@@ -6,8 +6,8 @@ ARG ENV
 ARG PACKTOKEN
 ENV PATH /app/node_modules/.bin:$PATH
 COPY ./web/package.json ./
-COPY ./web/package-lock.json ./
 COPY ./web/.npmrc ./
+RUN npm config set python /usr/bin/python3.8
 RUN npm install -g dotenv-cli
 RUN npm install
 COPY ./web ./

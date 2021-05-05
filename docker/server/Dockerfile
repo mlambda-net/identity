@@ -7,7 +7,6 @@ RUN wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health
     chmod +x /bin/grpc_health_probe
 
 COPY go.mod .
-COPY go.sum .
 RUN go mod download
 COPY . .
 RUN go build -o /dist/server ./pkg/ports/server/main.go
