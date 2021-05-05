@@ -7,7 +7,7 @@ ARG PACKTOKEN
 ENV PATH /app/node_modules/.bin:$PATH
 COPY ./web/package.json ./
 COPY ./web/.npmrc ./
-RUN npm config set python /usr/bin/python3.8
+RUN apk add --no-cache --virtual python make g++
 RUN npm install -g dotenv-cli
 RUN npm install
 COPY ./web ./

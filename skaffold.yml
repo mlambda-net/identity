@@ -61,6 +61,10 @@ profiles:
             valuesFiles: [helm/server/chart/values.yaml, helm/server/env/qa.yaml]
             setValueTemplates:
               image.tag: "{{.VERSION}}"
+              app.secret: "{{.SECRET_KEY}}"
+              app.db.user: "{{.DB_USER}}"
+              app.db.password: "{{.DB_PASSWORD}}"
+              app.db.host: "{{.DB_HOST}}"
 
           - name: api
             namespace: identity
@@ -68,6 +72,7 @@ profiles:
             valuesFiles: [helm/api/chart/values.yaml, helm/api/env/qa.yaml]
             setValueTemplates:
               image.tag: "{{.VERSION}}"
+              app.secret: "{{.SECRET_KEY}}"
 
           - name: web
             namespace: identity
@@ -97,7 +102,6 @@ profiles:
               app.secret: "{{.SECRET_KEY}}"
               app.db.user: "{{.DB_USER}}"
               app.db.password: "{{.DB_PASSWORD}}"
-              app.db.data: "{{.DB_DATA}}"
               app.db.host: "{{.DB_HOST}}"
 
           - name: api
