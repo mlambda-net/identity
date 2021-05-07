@@ -21,10 +21,28 @@ app:
     db: 0
     password: ""
 
+ssl:
+  enabled: true
+  generateTLS: true
+  defaultCN: mitienda.co.cr
+  defaultIPList:
+    - 100.0.0.200
+  defaultSANList:
+    - api.mitienda.co.cr
+    - docs.mitienda.co.cr
+    - oauth.mitienda.co.cr
+
 ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  tls:
+    - secretName: api-tls
+      hosts:
+        - api.mitienda.co.cr
+        - docs.mitienda.co.cr
+        - oauth.mitienda.co.cr
   hosts:
     - host: api.mitienda.co.cr
       paths:
@@ -32,14 +50,12 @@ ingress:
           backend:
             serviceName: api
             servicePort: 8000
-
     - host: docs.mitienda.co.cr
       paths:
         - path: /identity/swagger
           backend:
             serviceName: api
             servicePort: 8002
-
     - host: oauth.mitienda.co.cr
       paths:
         - path: /
