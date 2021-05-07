@@ -64,14 +64,14 @@ service:
   port: 8090
 
 ssl:
-  enabled: true
+  enabled: false
   generateTLS: true
   defaultCN: server.mitienda.co.cr
   defaultIPList:
     - 100.0.0.200
 
 ingress:
-  enabled: true
+  enabled: false
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
