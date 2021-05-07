@@ -71,6 +71,10 @@ ssl:
   defaultCN: mitienda.co.cr
   defaultIPList:
     - 100.0.0.200
+  defaultSANList:
+    - api.mitienda.co.cr
+    - docs.mitienda.co.cr
+    - oauth.mitienda.co.cr
 
 ingress:
   enabled: true
