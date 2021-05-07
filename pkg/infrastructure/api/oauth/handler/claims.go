@@ -12,7 +12,7 @@ type claims struct {
   Issuer    string   `json:"iss,omitempty"`
   NotBefore int64    `json:"nbf,omitempty"`
   Subject   string   `json:"sub,omitempty"`
-  Email     string   `json:"email,omitempty"`
+  Email     string   `json:"https://mitienda.co.cr/email,omitempty"`
   Name      string   `json:"name,omitempty"`
   Roles     []string `json:"roles"`
 }

@@ -65,6 +65,12 @@ service:
      swagger: 8002
      oauth: 8004
 
+ssl:
+  enabled: true
+  generateTLS: true
+  defaultCN: api.mitienda.co.cr
+  defaultIPList: 100.0.0.200
+
 ingress:
   enabled: true
   annotations:
