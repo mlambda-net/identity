@@ -63,23 +63,11 @@ service:
   type: NodePort
   port: 8090
 
-ssl:
-  enabled: false
-  generateTLS: true
-  defaultCN: server.mitienda.co.cr
-  defaultIPList:
-    - 100.0.0.200
-
 ingress:
   enabled: false
   annotations:
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-  tls:
-    - secretName: server-tls
-      hosts:
-        - server.mitienda.co.cr
   hosts:
     - host: server.mitienda.co.cr
       paths:
