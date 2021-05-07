@@ -68,13 +68,21 @@ service:
 ssl:
   enabled: true
   generateTLS: true
-  defaultCN: api.mitienda.co.cr
-  defaultIPList: 100.0.0.200
+  defaultCN: mitienda.co.cr
+  defaultIPList:
+    - 100.0.0.200
 
 ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  tls:
+    - secretName: api-tls
+      hosts:
+        - api.mitienda.co.cr
+        - docs.mitienda.co.cr
+        - oauth.mitienda.co.cr
   hosts:
     - host: api-dev.mitienda.co.cr
       paths:
