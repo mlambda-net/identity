@@ -31,8 +31,7 @@ require (
 	github.com/swaggo/swag v1.7.0
 	github.com/tidwall/btree v0.3.0 // indirect
 	github.com/tidwall/buntdb v1.1.4 // indirect
-	github.com/tidwall/gjson v1.6.4 // indirect
-	github.com/tidwall/match v1.0.2 // indirect
+	github.com/tidwall/gjson v1.9.3 // indirect
 	github.com/tidwall/rtree v0.0.0-20201103190202-0d877048965d // indirect
 	github.com/ugorji/go v1.2.0 // indirect
 	golang.org/x/net v0.0.0-20210220033124-5f55cee0dc0d // indirect
