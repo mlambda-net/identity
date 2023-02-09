@@ -8,11 +8,10 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/etherlabsio/healthcheck v0.0.0-20191224061800-dd3d2fd8c3f6
-	github.com/gin-gonic/gin v1.6.3
+	github.com/gin-gonic/gin v1.7.7
 	github.com/go-oauth2/oauth2/v4 v4.1.2
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-pg/pg/v10 v10.8.0
-	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/go-redis/redis/v8 v8.8.0
 	github.com/go-session/session v3.1.2+incompatible
 	github.com/gogo/protobuf v1.3.2
